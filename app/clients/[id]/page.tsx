@@ -204,7 +204,7 @@ export default function ChatPage({
   }
 
   return (
-    <div className="flex h-screen flex-col bg-background fixed inset-0">
+    <div className="flex h-dvh flex-col bg-background">
       {/* Navigation Bar with contact info */}
       <header className="glass sticky top-0 z-10 border-b border-separator shrink-0">
         <div className="flex items-center gap-3 px-4 py-2.5">
