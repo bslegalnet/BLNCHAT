@@ -1,0 +1,17 @@
+{
+  "name": "Blackstone Legal Network",
+  "short_name": "Blackstone",
+  "description": "Client Relations Interface & AI negotiation simulator",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#d4af37",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
