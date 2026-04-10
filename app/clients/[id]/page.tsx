@@ -205,8 +205,8 @@ export default function ChatPage({
 
   return (
     <div className="flex h-dvh flex-col bg-background">
-      {/* Navigation Bar with contact info */}
-      <header className="glass sticky top-0 z-10 border-b border-separator shrink-0">
+      {/* Navigation Bar */}
+      <header className="glass relative z-10 border-b border-separator">
         <div className="flex items-center gap-3 px-4 py-2.5">
           <Link
             href="/"
@@ -288,7 +288,7 @@ export default function ChatPage({
       </div>
 
       {/* Input */}
-      <div className="glass border-t border-separator px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] shrink-0">
+      <div className="glass border-t border-separator px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <form
           onSubmit={(e) => {
             e.preventDefault();
