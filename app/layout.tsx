@@ -32,6 +32,13 @@ export const metadata: Metadata = {
     title: 'Blackstone',
   },
   manifest: '/manifest.json',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    interactiveWidget: 'resizes-content',
+  },
   other: {
     'apple-mobile-web-app-capable': 'yes',
   },
