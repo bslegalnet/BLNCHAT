@@ -18,7 +18,13 @@ export const metadata: Metadata = {
   description: 'Client Relations Interface & AI negotiation simulator',
   icons: {
     icon: '/logo.png',
-    apple: '/logo.png',
+    apple: [
+      {
+        url: '/logo.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+    ],
   },
   appleWebApp: {
     capable: true,
@@ -26,6 +32,9 @@ export const metadata: Metadata = {
     title: 'Blackstone',
   },
   manifest: '/manifest.json',
+  other: {
+    'apple-mobile-web-app-capable': 'yes',
+  },
 };
 
 export default function RootLayout({

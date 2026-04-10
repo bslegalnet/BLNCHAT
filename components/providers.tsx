@@ -9,6 +9,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // Seed data if needed
     if (!isSeeded()) {
       saveClients(seedClients);
       localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(seedMessages));
@@ -20,15 +21,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
     const theme = settings.theme || 'dark';
     document.documentElement.setAttribute('data-theme', theme);
     
-    setReady(true);
+    // Small delay to ensure localStorage is ready
+    setTimeout(() => setReady(true), 100);
   }, []);
 
   if (!ready) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-background">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold border-t-transparent" />
-      </div>
-    );
+    return null;
   }
 
   return <>{children}</>;

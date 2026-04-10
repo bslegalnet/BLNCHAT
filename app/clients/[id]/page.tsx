@@ -140,10 +140,7 @@ export default function ChatPage({
     setSending(true);
 
     try {
-      // Wait 15 seconds before showing typing indicator
-      await new Promise((r) => setTimeout(r, 15000));
-      setTyping(true);
-      
+      // Call API immediately
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -157,6 +154,10 @@ export default function ChatPage({
       if (!res.ok) throw new Error('Failed to get response');
 
       const data = await res.json();
+      
+      // Wait 15 seconds before showing typing indicator
+      await new Promise((r) => setTimeout(r, 15000));
+      setTyping(true);
       
       // Wait 20 seconds before sending the message
       await new Promise((r) => setTimeout(r, 20000));
@@ -204,77 +205,43 @@ export default function ChatPage({
 
   return (
     <div className="flex h-dvh flex-col bg-background">
-      {/* Navigation Bar — Apple style */}
-      <header className="glass relative z-10 border-b border-separator">
-        <div className="flex items-center px-4 py-2.5">
+      {/* Navigation Bar with contact info */}
+      <header className="glass sticky top-0 z-10 border-b border-separator shrink-0">
+        <div className="flex items-center gap-3 px-4 py-2.5">
           <Link
             href="/"
-            className="flex items-center gap-0.5 text-accent -ml-1 mr-2 shrink-0"
+            className="flex items-center justify-center -ml-1 shrink-0"
           >
-            <ChevronLeft className="h-[22px] w-[22px]" strokeWidth={2.5} />
-            <span className="text-[17px]">Back</span>
+            <ChevronLeft className="h-[28px] w-[28px]" strokeWidth={2.5} />
           </Link>
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-            <h1 className="text-[15px] font-semibold leading-tight truncate max-w-[180px]">
+          <div className="flex-1 min-w-0 text-center">
+            <h1 className="text-[15px] font-semibold leading-tight truncate">
               {client.contactName}
             </h1>
-            <p className="text-[11px] text-muted-dark mt-0.5">
+            <p className="text-[13px] text-muted-dark mt-0.5 truncate">
               {client.firmName}
             </p>
           </div>
-          <div className="ml-auto shrink-0 flex gap-2">
-            <button
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-solid text-accent transition-transform duration-150 active:scale-90"
-            >
-              <Phone className="h-[18px] w-[18px]" />
-            </button>
-            <button
-              onClick={() => setShowOrder(true)}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-solid text-accent transition-transform duration-150 active:scale-90"
-            >
-              <Info className="h-[18px] w-[18px]" />
-            </button>
-          </div>
+          <button
+            onClick={() => setShowOrder(true)}
+            className="flex h-8 w-8 items-center justify-center shrink-0 text-accent transition-transform duration-150 active:scale-90"
+          >
+            <Info className="h-[20px] w-[20px]" />
+          </button>
         </div>
       </header>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-2xl px-4 py-4">
-          {/* Contact card */}
-          <div className="mb-8 flex flex-col items-center pt-4 animate-fade-in">
-            <Avatar name={client.firmName} className="h-16 w-16 text-xl mb-2" />
-            <p className="text-[17px] font-semibold">{client.firmName}</p>
-            <p className="text-[13px] text-muted-dark mt-0.5">
-              {client.order.practiceArea}
-            </p>
-            <div className="mt-3 flex gap-4">
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-solid">
-                  <Phone className="h-[17px] w-[17px] text-accent" />
-                </div>
-                <span className="text-[10px] text-accent">call</span>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-solid">
-                  <Mail className="h-[17px] w-[17px] text-accent" />
-                </div>
-                <span className="text-[10px] text-accent">mail</span>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-solid">
-                  <Info className="h-[17px] w-[17px] text-accent" />
-                </div>
-                <span className="text-[10px] text-accent">info</span>
-              </div>
-            </div>
-          </div>
 
-          {/* Message bubbles — iMessage style */}
+          {/* Message bubbles */}
           {messages.map((msg, i) => {
             const isUser = msg.role === 'user';
             const prevMsg = messages[i - 1];
+            const nextMsg = messages[i + 1];
             const sameSender = prevMsg?.role === msg.role;
+            const isLastUserMessage = isUser && nextMsg?.role !== 'user';
             return (
               <div
                 key={msg.id}
@@ -285,23 +252,22 @@ export default function ChatPage({
                 )}
                 style={{ animationDelay: `${i * 20}ms` }}
               >
-                <div
-                  className={cn(
-                    'max-w-[75%] px-3.5 py-2 text-[15px] leading-[1.35]',
-                    isUser
-                      ? 'bg-accent text-white rounded-[20px] rounded-br-[6px]'
-                      : 'bg-surface-light text-foreground rounded-[20px] rounded-bl-[6px]'
-                  )}
-                >
-                  <p>{msg.content}</p>
-                  <p
+                <div className={cn("flex flex-col", isUser ? "items-end" : "items-start")}>
+                  <div
                     className={cn(
-                      'mt-0.5 text-[10px]',
-                      isUser ? 'text-white/60' : 'text-muted-dark'
+                      'px-3.5 py-2 text-[15px] leading-[1.35]',
+                      isUser
+                        ? 'bg-accent text-white rounded-[20px] rounded-br-[6px] max-w-[260px]'
+                        : 'bg-surface-light text-foreground rounded-[20px] rounded-bl-[6px] max-w-[260px]'
                     )}
                   >
-                    {formatDate(msg.timestamp)}
-                  </p>
+                    <p>{msg.content}</p>
+                  </div>
+                  {isUser && isLastUserMessage && (
+                    <p className="text-[11px] text-muted-dark mt-1">
+                      Delivered
+                    </p>
+                  )}
                 </div>
               </div>
             );
@@ -321,26 +287,8 @@ export default function ChatPage({
         </div>
       </div>
 
-      {/* Input — iMessage style */}
-      <div className="glass border-t border-separator px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-        {/* Suggestions */}
-        {suggestions.length > 0 && !input && (
-          <div className="pt-2 pb-1 flex gap-2 overflow-x-auto no-scrollbar">
-            {suggestions.map((suggestion, i) => (
-              <button
-                key={i}
-                onClick={() => {
-                  setInput(suggestion);
-                  inputRef.current?.focus();
-                }}
-                className="shrink-0 rounded-full bg-surface-solid border border-gold/20 px-4 py-2 text-[13px] text-foreground hover:bg-surface-light transition-colors duration-150 active:scale-95"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        )}
-        
+      {/* Input */}
+      <div className="glass border-t border-separator px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] shrink-0">
         <form
           onSubmit={(e) => {
             e.preventDefault();
